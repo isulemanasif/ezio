@@ -231,7 +231,10 @@ export default function ProfilePage() {
 
             <EditProfileModal
                 isOpen={isEditModalOpen}
-                onClose={() => setIsEditModalOpen(false)}
+                onClose={() => {
+                    setIsEditModalOpen(false)
+                    router.refresh()
+                }}
                 profile={profile}
                 onUpdate={(newProfile) => setProfile(newProfile)}
             />

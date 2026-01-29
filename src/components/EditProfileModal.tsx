@@ -50,6 +50,16 @@ export function EditProfileModal({
                 .getPublicUrl(filePath)
 
             setAvatarUrl(publicUrl)
+
+            // Auto-save to database to avoid confusion
+            const { data: { user } } = await supabase.auth.getUser()
+            if (user) {
+                await supabase
+                    .from('profiles')
+                    .update({ avatar_url: publicUrl })
+                    .eq('id', user.id)
+            }
+
         } catch (error: any) {
             alert(error.message)
         } finally {

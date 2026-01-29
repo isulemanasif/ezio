@@ -6,12 +6,14 @@ import { createClient } from '@/lib/supabase'
 import { Search, Heart, MessageCircle } from 'lucide-react'
 
 export function Navbar() {
+    const [user, setUser] = useState<any>(null)
     const [profile, setProfile] = useState<any>(null)
     const supabase = createClient()
 
     useEffect(() => {
-        const getProfile = async () => {
+        const getData = async () => {
             const { data: { user } } = await supabase.auth.getUser()
+            setUser(user)
             if (user) {
                 const { data } = await supabase
                     .from('profiles')
@@ -21,7 +23,7 @@ export function Navbar() {
                 setProfile(data)
             }
         }
-        getProfile()
+        getData()
     }, [])
 
     return (
