@@ -12,9 +12,12 @@ const STYLES = [
     'from-indigo-500 to-purple-500',
 ]
 
+import { StoryViewer } from './StoryViewer'
+
 export function StoryBar() {
     const [stories, setStories] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
+    const [viewingIndex, setViewingIndex] = useState<number | null>(null)
     const supabase = createClient()
 
     useEffect(() => {
@@ -64,30 +67,41 @@ export function StoryBar() {
     }
 
     return (
-        <div className="bg-white border border-gray-200 rounded-xl p-4 mb-6 overflow-hidden shadow-sm">
-            <div className="flex space-x-4 overflow-x-auto scrollbar-hide pb-2">
-                {stories.map((story, i) => (
-                    <motion.div
-                        key={story.id}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="flex flex-col items-center space-y-1 cursor-pointer min-w-[72px]"
-                    >
-                        <div className={`w-16 h-16 rounded-full bg-gradient-to-tr ${STYLES[i % STYLES.length]} p-[2px]`}>
-                            <div className="w-full h-full rounded-full bg-white p-[2px]">
-                                <img
-                                    src={story.profiles?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${story.user_id}`}
-                                    alt={story.profiles?.username}
-                                    className="w-full h-full rounded-full object-cover"
-                                />
+        <>
+            <div className="bg-white border border-gray-200 rounded-xl p-4 mb-6 overflow-hidden shadow-sm">
+                <div className="flex space-x-4 overflow-x-auto scrollbar-hide pb-2">
+                    {stories.map((story, i) => (
+                        <motion.div
+                            key={story.id}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => setViewingIndex(i)}
+                            className="flex flex-col items-center space-y-1 cursor-pointer min-w-[72px]"
+                        >
+                            <div className={`w-16 h-16 rounded-full bg-gradient-to-tr ${STYLES[i % STYLES.length]} p-[2px]`}>
+                                <div className="w-full h-full rounded-full bg-white p-[2px]">
+                                    <img
+                                        src={story.profiles?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${story.user_id}`}
+                                        alt={story.profiles?.username}
+                                        className="w-full h-full rounded-full object-cover"
+                                    />
+                                </div>
                             </div>
-                        </div>
-                        <span className="text-[10px] text-gray-500 truncate w-16 text-center">
-                            {story.profiles?.username || 'user'}
-                        </span>
-                    </motion.div>
-                ))}
+                            <span className="text-[10px] text-gray-500 truncate w-16 text-center">
+                                {story.profiles?.username || 'user'}
+                            </span>
+                        </motion.div>
+                    ))}
+                </div>
             </div>
-        </div>
+
+            {viewingIndex !== null && (
+                <StoryViewer
+                    stories={stories}
+                    initialIndex={viewingIndex}
+                    onClose={() => setViewingIndex(null)}
+                />
+            )}
+        </>
     )
 }

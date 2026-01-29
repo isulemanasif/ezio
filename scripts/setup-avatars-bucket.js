@@ -1,8 +1,22 @@
 const { createClient } = require('@supabase/supabase-js')
-require('dotenv').config({ path: '.env.local' })
+const fs = require('fs')
+const path = require('path')
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+// Read .env.local manually
+let supabaseUrl, supabaseKey
+try {
+    const envConfig = fs.readFileSync(path.resolve(__dirname, '../.env.local'), 'utf8')
+    envConfig.split('\n').forEach(line => {
+        if (line.startsWith('NEXT_PUBLIC_SUPABASE_URL=')) {
+            supabaseUrl = line.split('=')[1].trim().replace(/^["']|["']$/g, '')
+        }
+        if (line.startsWith('NEXT_PUBLIC_SUPABASE_ANON_KEY=')) {
+            supabaseKey = line.split('=')[1].trim().replace(/^["']|["']$/g, '')
+        }
+    })
+} catch (e) {
+    console.error('Could not read .env.local', e)
+}
 
 if (!supabaseUrl || !supabaseKey) {
     console.error('Missing Supabase credentials in .env.local')
