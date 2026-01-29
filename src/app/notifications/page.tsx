@@ -11,46 +11,51 @@ export default function NotificationsPage() {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        // Mock data for notifications until we have a real table
-        const mockNotifications = [
-            {
-                id: 1,
-                type: 'like',
-                user: { username: 'travel_lover', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=121' },
-                content: 'liked your post.',
-                time: '2h',
-                image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&q=80'
-            },
-            {
-                id: 2,
-                type: 'follow',
-                user: { username: 'tech_geek', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=125' },
-                content: 'started following you.',
-                time: '5h',
-                isFollowing: false
-            },
-            {
-                id: 3,
-                type: 'comment',
-                user: { username: 'foodie_vibes', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=130' },
-                content: 'commented: "This looks amazing! 😍"',
-                time: '1d',
-                image: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=100&q=80'
-            },
-            {
-                id: 4,
-                type: 'like',
-                user: { username: 'nature_boy', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=135' },
-                content: 'liked your reel.',
-                time: '2d',
-                image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=100&q=80'
-            }
-        ]
+        const fetchNotifications = async () => {
+            const { data: { user } } = await supabase.auth.getUser()
+            if (!user) return
 
-        setTimeout(() => {
-            setNotifications(mockNotifications)
+            const { data } = await supabase
+                .from('notifications')
+                .select(`
+                    id,
+                    type,
+                    content,
+                    created_at,
+                    read,
+                    actor_id,
+                    profiles:actor_id (username, avatar_url)
+                `)
+                .eq('recipient_id', user.id)
+                .order('created_at', { ascending: false })
+
+            // Transform data to match UI expected format
+            const realNotifs = (data || []).map((n: any) => ({
+                id: n.id,
+                type: n.type,
+                user: {
+                    username: n.profiles?.username || 'User',
+                    avatar: n.profiles?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${n.actor_id}`
+                },
+                content: n.content,
+                time: new Date(n.created_at).toLocaleDateString(), // Simplification for now
+                image: null, // We can add post image later if needed
+                read: n.read
+            }))
+
+            setNotifications(realNotifs)
             setLoading(false)
-        }, 1000)
+
+            // Mark all as read
+            if (data?.length) {
+                await supabase
+                    .from('notifications')
+                    .update({ read: true })
+                    .eq('recipient_id', user.id)
+            }
+        }
+
+        fetchNotifications()
     }, [])
 
     return (
@@ -83,7 +88,7 @@ export default function NotificationsPage() {
                                                 className="w-12 h-12 rounded-full object-cover"
                                             />
                                             <div className={`absolute -bottom-1 -right-1 p-1 rounded-full border-2 border-white ${notif.type === 'like' ? 'bg-red-500' :
-                                                    notif.type === 'follow' ? 'bg-blue-500' : 'bg-green-500'
+                                                notif.type === 'follow' ? 'bg-blue-500' : 'bg-green-500'
                                                 }`}>
                                                 {notif.type === 'like' && <Heart className="w-2 h-2 text-white fill-current" />}
                                                 {notif.type === 'follow' && <UserPlus className="w-2 h-2 text-white" />}

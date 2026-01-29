@@ -4,6 +4,7 @@ import { MessageSquare, Heart, Share2, MoreHorizontal, Bookmark } from 'lucide-r
 import { motion, AnimatePresence } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
+import Link from 'next/link'
 
 export function Post({ post }: { post: any }) {
     const [isLiked, setIsLiked] = useState(false)
@@ -105,13 +106,17 @@ export function Post({ post }: { post: any }) {
             {/* Post Header */}
             <div className="flex items-center justify-between p-4">
                 <div className="flex items-center space-x-3">
-                    <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 p-[1.5px]">
-                        <div className="w-full h-full rounded-full bg-white p-[1.5px]">
-                            <img src={post.avatar} alt={post.username} className="w-full h-full rounded-full object-cover" />
+                    <Link href={`/profile/${post.user_id}`}>
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 p-[1.5px] cursor-pointer">
+                            <div className="w-full h-full rounded-full bg-white p-[1.5px]">
+                                <img src={post.avatar} alt={post.username} className="w-full h-full rounded-full object-cover" />
+                            </div>
                         </div>
-                    </div>
+                    </Link>
                     <div>
-                        <h3 className="text-sm font-bold text-gray-900">{post.username}</h3>
+                        <Link href={`/profile/${post.user_id}`}>
+                            <h3 className="text-sm font-bold text-gray-900 hover:underline cursor-pointer">{post.username}</h3>
+                        </Link>
                         <p className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold">{post.location || 'Original content'}</p>
                     </div>
                 </div>
