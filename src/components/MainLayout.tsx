@@ -36,9 +36,9 @@ export default function MainLayout({
             <Sidebar />
 
             {/* Main Content Area */}
-            <div className="flex-1 ml-64 flex flex-col pt-20 transition-all duration-300">
+            <div className="flex-1 md:ml-64 flex flex-col pt-20 pb-20 md:pb-0 transition-all duration-300">
                 <Navbar />
-                <main className="flex-1 p-8">
+                <main className="flex-1 p-4 md:p-8">
                     <div className="max-w-6xl mx-auto flex gap-10">
                         {children}
 

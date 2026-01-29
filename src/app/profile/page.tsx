@@ -8,6 +8,12 @@ import { Settings, Grid, Bookmark, Tag, Loader2, MonitorPlay, Play } from 'lucid
 import { motion, AnimatePresence } from 'framer-motion'
 import { EditProfileModal } from '@/components/EditProfileModal'
 
+const formatCount = (n: number) => {
+    if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M'
+    if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K'
+    return n.toString()
+}
+
 export default function ProfilePage() {
     const [user, setUser] = useState<any>(null)
     const [profile, setProfile] = useState<any>(null)
@@ -167,11 +173,15 @@ export default function ProfilePage() {
                                 <span className="ml-1 text-gray-600">posts</span>
                             </div>
                             <div className="text-center md:text-left">
-                                <span className="font-bold text-gray-900">{profile?.followers_count || 0}</span>
+                                <span className="font-bold text-gray-900">
+                                    {formatCount(profile?.followers_count || 0)}
+                                </span>
                                 <span className="ml-1 text-gray-600">followers</span>
                             </div>
                             <div className="text-center md:text-left">
-                                <span className="font-bold text-gray-900">{profile?.following_count || 0}</span>
+                                <span className="font-bold text-gray-900">
+                                    {formatCount(profile?.following_count || 0)}
+                                </span>
                                 <span className="ml-1 text-gray-600">following</span>
                             </div>
                         </div>

@@ -55,7 +55,7 @@ export function Navbar() {
     }, [])
 
     return (
-        <nav className="fixed top-0 left-64 right-0 h-20 bg-white/80 backdrop-blur-md border-b border-white/20 z-40 px-8 flex items-center justify-between shadow-sm">
+        <nav className="fixed top-0 md:left-64 left-0 right-0 h-20 bg-white/80 backdrop-blur-md border-b border-white/20 z-40 px-4 md:px-8 flex items-center justify-between shadow-sm">
             <div className="flex-1 max-w-sm relative">
                 <div className="relative group z-50">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
