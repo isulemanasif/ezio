@@ -148,7 +148,7 @@ export default function ProfilePage() {
                         </div>
 
                         <div>
-                            <h1 className="font-bold text-gray-900">{profile?.full_name || 'Ezio User'}</h1>
+                            <h1 className="font-bold text-gray-900">{profile?.full_name || 'Eziogram User'}</h1>
                             <p className="text-gray-800 text-sm mt-1 whitespace-pre-line">
                                 {profile?.bio || 'No bio yet. Click Edit Profile to add one! ✨'}
                             </p>

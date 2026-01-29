@@ -68,7 +68,7 @@ export function Reel({ reel }: { reel: any }) {
                                     transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
                                     className="text-white text-xs whitespace-nowrap font-bold"
                                 >
-                                    {reel.music || 'Original Audio - Ezio Sound System'}
+                                    {reel.music || 'Original Audio - Eziogram Sound System'}
                                 </motion.span>
                             </div>
                         </div>

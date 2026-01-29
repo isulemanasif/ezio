@@ -5,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Ezio | Unique Social Media",
+  title: "Eziogram | Unique Social Media",
   description: "Experience stories, reels, and posts in one unique place.",
 };
 

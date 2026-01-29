@@ -6,7 +6,7 @@ import { Search, Phone, Video, Info, Send, Smile, Image as ImageIcon, MessageCir
 import { motion } from 'framer-motion'
 
 const MOCK_CHATS = [
-    { id: 1, name: 'Suleman Asif', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=suleman', lastMsg: 'Ezio is looking great! 🔥', time: '10m', online: true },
+    { id: 1, name: 'Suleman Asif', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=suleman', lastMsg: 'Eziogram is looking great! 🔥', time: '10m', online: true },
     { id: 2, name: 'Google Antigravity', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=cortex', lastMsg: 'How can I assist you today?', time: '1h', online: true },
     { id: 3, name: 'Elon Musk', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=elon', lastMsg: 'Need to talk about X integration.', time: '2h', online: false },
     { id: 4, name: 'Zuck', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=zuck', lastMsg: 'Threads did it first lol', time: '5h', online: false },
@@ -94,7 +94,7 @@ export default function MessagesPage() {
                                 </div>
                                 <div className="flex justify-end">
                                     <div className="bg-blue-600 p-4 rounded-2xl rounded-tr-none shadow-lg shadow-blue-100 max-w-sm">
-                                        <p className="text-sm text-white">This UI looks amazing! Good job Ezio team. 🚀</p>
+                                        <p className="text-sm text-white">This UI looks amazing! Good job Eziogram team. 🚀</p>
                                         <span className="text-[10px] text-blue-200 mt-2 block">Just now</span>
                                     </div>
                                 </div>

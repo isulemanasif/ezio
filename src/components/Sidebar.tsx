@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Home, Search, Compass, PlaySquare, MessageSquare, Heart, PlusSquare, User, LogOut } from 'lucide-react'
-import { EzioLogo } from '@/components/EzioLogo'
+import { EziogramLogo } from '@/components/EziogramLogo'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 
@@ -31,10 +31,10 @@ export function Sidebar() {
 
     return (
         <div className="fixed left-0 top-0 h-screen w-64 border-r border-gray-200 bg-white flex flex-col p-4 z-50 transition-all duration-300">
-            <div className="flex items-center space-x-2 px-4 mb-8">
-                <EzioLogo size={32} />
-                <span className="text-2xl font-bold italic">Ezio</span>
-            </div>
+            <Link href="/" className="flex items-center space-x-3 px-3 mb-10 group">
+                <EziogramLogo size={32} />
+                <span className="text-2xl font-bold italic group-hover:text-blue-600 transition-colors">Eziogram</span>
+            </Link>
 
             <nav className="flex-1 space-y-2">
                 {navItems.map((item) => {

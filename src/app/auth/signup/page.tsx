@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { EzioLogo } from '@/components/EzioLogo'
+import { EziogramLogo } from '@/components/EziogramLogo'
 
 export default function SignupPage() {
     const [email, setEmail] = useState('')
@@ -45,7 +45,7 @@ export default function SignupPage() {
         return (
             <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
                 <div className="max-w-md w-full bg-white border border-gray-300 p-10 flex flex-col items-center space-y-6 text-center">
-                    <EzioLogo size={60} />
+                    <EziogramLogo size={60} />
                     <h2 className="text-2xl font-bold text-green-600">Signup Successful!</h2>
                     <p className="text-gray-600">
                         Your account has been created successfully.
@@ -64,13 +64,13 @@ export default function SignupPage() {
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
             <div className="max-w-md w-full bg-white border border-gray-300 p-10 flex flex-col items-center space-y-6">
-                <div className="flex flex-col items-center space-y-2 text-center">
-                    <EzioLogo size={60} />
-                    <h1 className="text-4xl font-bold tracking-tight text-gray-900 italic">Ezio</h1>
-                    <p className="text-gray-500 font-semibold text-center mt-2">
-                        Sign up to see photos and videos from your friends.
-                    </p>
+                <div className="flex flex-col items-center mb-8">
+                    <EziogramLogo size={60} />
+                    <h1 className="text-4xl font-bold tracking-tight text-gray-900 italic">Eziogram</h1>
                 </div>
+                <p className="text-gray-500 font-semibold text-center mt-2">
+                    Sign up to see photos and videos from your friends.
+                </p>
 
                 <form onSubmit={handleSignup} className="w-full space-y-3">
                     <input

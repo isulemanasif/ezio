@@ -41,7 +41,7 @@ export function Navbar() {
                 <Link href="/profile" className="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 p-[2px] cursor-pointer hover:scale-105 transition-transform">
                     <div className="w-full h-full rounded-full bg-white p-[2px]">
                         <img
-                            src={user ? `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.id}` : "https://api.dicebear.com/7.x/avataaars/svg?seed=Ezio"}
+                            src={user ? `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.id}` : "https://api.dicebear.com/7.x/avataaars/svg?seed=Eziogram"}
                             alt="Profile"
                             className="w-full h-full rounded-full"
                         />

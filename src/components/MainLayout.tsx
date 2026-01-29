@@ -34,7 +34,7 @@ export default function MainLayout({
                                                     />
                                                     <div>
                                                         <p className="text-xs font-bold text-gray-900">friend_{i}</p>
-                                                        <p className="text-[10px] text-gray-500">Popular on Ezio</p>
+                                                        <p className="text-[10px] text-gray-500">Popular on Eziogram</p>
                                                     </div>
                                                 </div>
                                                 <button className="text-xs font-bold text-blue-500 hover:text-blue-700 transition-colors">Follow</button>
@@ -52,7 +52,7 @@ export default function MainLayout({
                                     <span>Privacy</span>
                                     <span>Terms</span>
                                 </div>
-                                <p className="text-[10px] text-gray-300 px-2 font-bold uppercase italic">© 2026 EZIO FROM ANTIGRAVITY</p>
+                                <p className="text-[10px] text-gray-300 px-2 font-bold uppercase italic">© 2026 EZIOGRAM FROM ANTIGRAVITY</p>
                             </div>
                         </div>
                     </div>

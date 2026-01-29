@@ -60,7 +60,7 @@ export default function Home() {
               <Post key={post.id} post={{
                 ...post,
                 username: post.profiles?.username || 'user',
-                avatar: post.profiles?.avatar_url || 'https://api.dicebear.com/7.x/avataaars/svg?seed=ezio',
+                avatar: post.profiles?.avatar_url || 'https://api.dicebear.com/7.x/avataaars/svg?seed=eziogram',
                 likes: post.likes_count,
                 comments: 0, // Mock for now
                 time: new Date(post.created_at).toLocaleDateString(),
