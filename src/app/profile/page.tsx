@@ -156,11 +156,11 @@ export default function ProfilePage() {
                                 <span className="ml-1 text-gray-600">posts</span>
                             </div>
                             <div className="text-center md:text-left">
-                                <span className="font-bold text-gray-900">0</span>
+                                <span className="font-bold text-gray-900">{profile?.followers_count || 0}</span>
                                 <span className="ml-1 text-gray-600">followers</span>
                             </div>
                             <div className="text-center md:text-left">
-                                <span className="font-bold text-gray-900">0</span>
+                                <span className="font-bold text-gray-900">{profile?.following_count || 0}</span>
                                 <span className="ml-1 text-gray-600">following</span>
                             </div>
                         </div>
