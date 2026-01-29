@@ -90,7 +90,7 @@ export default function ProfilePage() {
                         <div className="w-32 md:w-40 h-32 md:h-40 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 p-[3px]">
                             <div className="w-full h-full rounded-full bg-white p-[3px]">
                                 <img
-                                    src={profile?.avatar_url ? `${profile.avatar_url}?t=${Date.now()}` : `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.id}`}
+                                    src={profile?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.id}`}
                                     alt="Profile"
                                     className="w-full h-full rounded-full object-cover"
                                 />
