@@ -19,7 +19,7 @@ export function Navbar() {
                     .from('profiles')
                     .select('avatar_url')
                     .eq('id', user.id)
-                    .single()
+                    .maybeSingle()
                 setProfile(data)
             }
         }
@@ -27,36 +27,32 @@ export function Navbar() {
     }, [])
 
     return (
-        <div className="fixed top-0 right-0 left-64 h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 z-40 md:left-64 left-0">
-            <div className="flex-1 max-w-lg">
+        <nav className="fixed top-0 left-64 right-0 h-16 bg-white border-b border-gray-200 z-40 px-8 flex items-center justify-between">
+            <div className="flex-1 max-w-sm">
                 <div className="relative group">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
                     <input
                         type="text"
-                        placeholder="Search communities, people, posts..."
-                        className="w-full pl-10 pr-4 py-2 bg-gray-100 border-none rounded-full text-sm focus:ring-2 focus:ring-blue-100 outline-none transition-all"
+                        placeholder="Search..."
+                        className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-transparent focus:border-gray-200 rounded-lg text-sm outline-none transition-all focus:bg-white"
                     />
                 </div>
             </div>
 
             <div className="flex items-center space-x-6">
-                <button className="relative p-2 hover:bg-gray-100 rounded-full transition-colors">
-                    <MessageCircle className="w-6 h-6 text-gray-700" />
-                    <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-                </button>
-                <button className="relative p-2 hover:bg-gray-100 rounded-full transition-colors">
-                    <Heart className="w-6 h-6 text-gray-700" />
-                </button>
+                <Heart className="w-6 h-6 text-gray-700 cursor-pointer hover:text-red-500 transition-colors" />
+                <MessageCircle className="w-6 h-6 text-gray-700 cursor-pointer hover:text-blue-500 transition-colors" />
+
                 <Link href="/profile" className="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 p-[2px] cursor-pointer hover:scale-105 transition-transform">
                     <div className="w-full h-full rounded-full bg-white p-[2px]">
                         <img
-                            src={profile?.avatar_url || "https://api.dicebear.com/7.x/avataaars/svg?seed=Eziogram"}
+                            src={profile?.avatar_url ? `${profile.avatar_url}?t=${Date.now()}` : `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.id || 'Eziogram'}`}
                             alt="Profile"
                             className="w-full h-full rounded-full object-cover"
                         />
                     </div>
                 </Link>
             </div>
-        </div>
+        </nav>
     )
 }
