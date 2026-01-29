@@ -22,13 +22,7 @@ export default function CreatePage() {
             setUser(user)
 
             if (user) {
-                await supabase.from('profiles').upsert({
-                    id: user.id,
-                    username: user.email?.split('@')[0],
-                    full_name: user.user_metadata?.full_name || 'Eziogram User',
-                    avatar_url: `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.id}`,
-                    updated_at: new Date().toISOString()
-                }, { onConflict: 'id' })
+                // Profile is now managed in Profile page and Edit modal efficiently
             }
         }
         getUser()
