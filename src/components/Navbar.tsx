@@ -6,15 +6,22 @@ import { createClient } from '@/lib/supabase'
 import { Search, Heart, MessageCircle } from 'lucide-react'
 
 export function Navbar() {
-    const [user, setUser] = useState<any>(null)
+    const [profile, setProfile] = useState<any>(null)
     const supabase = createClient()
 
     useEffect(() => {
-        const getUser = async () => {
+        const getProfile = async () => {
             const { data: { user } } = await supabase.auth.getUser()
-            setUser(user)
+            if (user) {
+                const { data } = await supabase
+                    .from('profiles')
+                    .select('avatar_url')
+                    .eq('id', user.id)
+                    .single()
+                setProfile(data)
+            }
         }
-        getUser()
+        getProfile()
     }, [])
 
     return (
@@ -41,9 +48,9 @@ export function Navbar() {
                 <Link href="/profile" className="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 p-[2px] cursor-pointer hover:scale-105 transition-transform">
                     <div className="w-full h-full rounded-full bg-white p-[2px]">
                         <img
-                            src={user ? `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.id}` : "https://api.dicebear.com/7.x/avataaars/svg?seed=Eziogram"}
+                            src={profile?.avatar_url || "https://api.dicebear.com/7.x/avataaars/svg?seed=Eziogram"}
                             alt="Profile"
-                            className="w-full h-full rounded-full"
+                            className="w-full h-full rounded-full object-cover"
                         />
                     </div>
                 </Link>
