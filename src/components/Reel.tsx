@@ -1,55 +1,104 @@
 "use client"
 
-import { Heart, MessageCircle, Share2, Music2, Bookmark, MoreHorizontal } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { useState } from 'react'
+import { Heart, MessageCircle, Share2, Music2, Bookmark, MoreHorizontal, Play, Pause } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { useState, useRef, useEffect } from 'react'
+import { createClient } from '@/lib/supabase'
 
 export function Reel({ reel }: { reel: any }) {
     const [liked, setLiked] = useState(false)
-    const [saved, setSaved] = useState(false)
+    const [likesCount, setLikesCount] = useState(reel.likes || 0)
+    const [isPlaying, setIsPlaying] = useState(true)
+    const videoRef = useRef<HTMLVideoElement>(null)
+    const supabase = createClient()
+
+    useEffect(() => {
+        // Check like status
+        const checkLike = async () => {
+            const { data: { user } } = await supabase.auth.getUser()
+            if (!user) return
+
+            const { data } = await supabase
+                .from('likes')
+                .select('*')
+                .eq('reel_id', reel.id)
+                .eq('user_id', user.id)
+                .maybeSingle()
+
+            if (data) setLiked(true)
+        }
+        checkLike()
+    }, [reel.id])
+
+    const togglePlay = () => {
+        if (videoRef.current) {
+            if (isPlaying) {
+                videoRef.current.pause()
+            } else {
+                videoRef.current.play()
+            }
+            setIsPlaying(!isPlaying)
+        }
+    }
+
+    const handleLike = async () => {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) return // Redirect to login in real app
+
+        const newLiked = !liked
+        setLiked(newLiked)
+        setLikesCount(prev => newLiked ? prev + 1 : Math.max(0, prev - 1))
+
+        try {
+            if (newLiked) {
+                await supabase.from('likes').insert({ reel_id: reel.id, user_id: user.id })
+            } else {
+                await supabase.from('likes').delete().eq('reel_id', reel.id).eq('user_id', user.id)
+            }
+        } catch (err) {
+            console.error('Like error', err)
+            // Revert
+            setLiked(!newLiked)
+            setLikesCount(prev => !newLiked ? prev + 1 : Math.max(0, prev - 1))
+        }
+    }
 
     return (
         <div className="relative h-screen w-full bg-black snap-start flex items-center justify-center overflow-hidden">
             {/* Immersive Video Layer */}
-            <div className="absolute inset-0 bg-black">
-                {reel.videoPlaceholder.endsWith('.mp4') ? (
-                    <video
-                        src={reel.videoPlaceholder}
-                        className="w-full h-full object-cover opacity-90"
-                        autoPlay
-                        muted
-                        loop
-                        playsInline
-                    />
-                ) : (
-                    <img
-                        src={reel.videoPlaceholder}
-                        className="w-full h-full object-cover opacity-70"
-                        alt="Reel content"
-                    />
+            <div className="absolute inset-0 bg-black cursor-pointer" onClick={togglePlay}>
+                <video
+                    ref={videoRef}
+                    src={reel.videoPlaceholder}
+                    className="w-full h-full object-cover"
+                    autoPlay
+                    loop
+                    playsInline
+                // muted // Unmute for better experience if browser allows, otherwise user must interact
+                />
+                {!isPlaying && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                        <Play className="w-16 h-16 text-white/80" />
+                    </div>
                 )}
             </div>
 
             {/* Content Overlays */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80 flex flex-col justify-end p-6 pb-24 md:pb-12">
-                <div className="flex justify-between items-end max-w-lg w-full mx-auto">
+            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80 flex flex-col justify-end p-6 pb-24 md:pb-12 pointer-events-none">
+                <div className="flex justify-between items-end max-w-lg w-full mx-auto pointer-events-auto">
                     {/* Caption & Creator Info */}
                     <div className="flex-1 pr-12 mb-2">
                         <div className="flex items-center space-x-3 mb-4">
                             <motion.div
                                 whileHover={{ scale: 1.1 }}
-                                className="w-11 h-11 rounded-full border-2 border-white overflow-hidden shadow-2xl"
+                                className="w-11 h-11 rounded-full border-2 border-white overflow-hidden shadow-2xl cursor-pointer"
                             >
                                 <img src={reel.avatar} alt={reel.username} className="w-full h-full object-cover" />
                             </motion.div>
                             <div className="flex flex-col">
-                                <h3 className="text-white font-black text-lg drop-shadow-lg flex items-center">
+                                <h3 className="text-white font-black text-lg drop-shadow-lg flex items-center cursor-pointer hover:underline">
                                     {reel.username}
-                                    <span className="ml-2 w-3 h-3 bg-blue-400 rounded-full border border-white flex items-center justify-center">
-                                        <div className="w-1 h-1 bg-white rounded-full" />
-                                    </span>
                                 </h3>
-                                <span className="text-white/60 text-[10px] font-bold tracking-widest uppercase">Sponsored</span>
                             </div>
                             <button className="ml-4 bg-white/20 hover:bg-white/40 text-white px-4 py-1.5 rounded-xl text-xs font-black backdrop-blur-xl border border-white/20 transition-all active:scale-95 shadow-lg">
                                 Follow
@@ -74,17 +123,17 @@ export function Reel({ reel }: { reel: any }) {
                         </div>
                     </div>
 
-                    {/* Right-side Action Menu (TikTok Vertical) */}
+                    {/* Right-side Action Menu */}
                     <div className="flex flex-col items-center space-y-7 pb-4">
                         <div className="flex flex-col items-center group cursor-pointer">
                             <motion.button
                                 whileTap={{ scale: 1.5 }}
-                                onClick={() => setLiked(!liked)}
+                                onClick={handleLike}
                                 className={`w-14 h-14 rounded-full flex items-center justify-center backdrop-blur-2xl border border-white/20 shadow-2xl transition-all ${liked ? 'bg-red-500/20 border-red-500/50' : 'bg-white/10 hover:bg-white/20'}`}
                             >
                                 <Heart className={`w-8 h-8 transition-colors ${liked ? 'text-red-500 fill-current' : 'text-white'}`} />
                             </motion.button>
-                            <span className="text-white text-[11px] font-black mt-1.5 drop-shadow-md">{reel.likes}</span>
+                            <span className="text-white text-[11px] font-black mt-1.5 drop-shadow-md">{likesCount}</span>
                         </div>
 
                         <div className="flex flex-col items-center group cursor-pointer">
@@ -94,24 +143,17 @@ export function Reel({ reel }: { reel: any }) {
                             >
                                 <MessageCircle className="w-8 h-8 text-white" />
                             </motion.button>
-                            <span className="text-white text-[11px] font-black mt-1.5 drop-shadow-md">4.2K</span>
+                            <span className="text-white text-[11px] font-black mt-1.5 drop-shadow-md">0</span>
                         </div>
 
                         <div className="flex flex-col items-center group cursor-pointer">
                             <motion.button
                                 whileTap={{ scale: 1.5 }}
-                                onClick={() => setSaved(!saved)}
-                                className={`w-14 h-14 rounded-full flex items-center justify-center backdrop-blur-2xl border border-white/20 shadow-2xl transition-all ${saved ? 'bg-yellow-500/20 border-yellow-500/50' : 'bg-white/10 hover:bg-white/20'}`}
+                                className={`w-14 h-14 rounded-full flex items-center justify-center backdrop-blur-2xl border border-white/20 shadow-2xl transition-all bg-white/10 hover:bg-white/20`}
                             >
-                                <Bookmark className={`w-7 h-7 transition-colors ${saved ? 'text-yellow-500 fill-current' : 'text-white'}`} />
+                                <Bookmark className={`w-7 h-7 text-white`} />
                             </motion.button>
-                            <span className="text-white text-[11px] font-black mt-1.5 drop-shadow-md">Share</span>
-                        </div>
-
-                        <div className="flex flex-col items-center group cursor-pointer">
-                            <motion.button className="w-14 h-14 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center backdrop-blur-2xl border border-white/20 shadow-2xl transition-all">
-                                <Share2 className="w-7 h-7 text-white" />
-                            </motion.button>
+                            <span className="text-white text-[11px] font-black mt-1.5 drop-shadow-md">Save</span>
                         </div>
 
                         <button className="p-2 hover:bg-white/10 rounded-full transition-colors text-white mt-4">
@@ -129,14 +171,10 @@ export function Reel({ reel }: { reel: any }) {
                 </div>
             </div>
 
-            {/* Top Bar for Reels (Back & Title) */}
-            <div className="absolute top-0 left-0 right-0 p-6 flex items-center justify-between z-50">
+            {/* Top Bar */}
+            <div className="absolute top-0 left-0 right-0 p-6 flex items-center justify-between z-50 pointer-events-none">
                 <span className="text-white font-black text-2xl tracking-tighter italic">Reels</span>
-                <div className="flex space-x-6 text-white/50 font-black text-sm uppercase tracking-widest">
-                    <span className="text-white cursor-pointer underline underline-offset-8">Trending</span>
-                    <span className="cursor-pointer hover:text-white transition-colors">Following</span>
-                </div>
-                <div className="w-10 h-10" /> {/* Spacer */}
+                <div className="w-10 h-10" />
             </div>
         </div>
     )

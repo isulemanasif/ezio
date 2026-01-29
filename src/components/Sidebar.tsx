@@ -30,10 +30,10 @@ export function Sidebar() {
     }
 
     return (
-        <div className="fixed left-0 top-0 h-screen w-64 border-r border-gray-200 bg-white flex flex-col p-4 z-50 transition-all duration-300">
+        <div className="fixed left-0 top-0 h-screen w-64 border-r border-white/20 bg-white/80 backdrop-blur-2xl flex flex-col p-4 z-50 transition-all duration-300 shadow-2xl shadow-blue-900/5">
             <Link href="/" className="flex items-center space-x-3 px-3 mb-10 group">
                 <EziogramLogo size={32} />
-                <span className="text-2xl font-bold italic group-hover:text-blue-600 transition-colors">Eziogram</span>
+                <span className="text-2xl font-black italic tracking-tighter bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent group-hover:scale-105 transition-transform">Eziogram</span>
             </Link>
 
             <nav className="flex-1 space-y-2">
@@ -44,11 +44,16 @@ export function Sidebar() {
                         <Link
                             key={item.label}
                             href={item.href}
-                            className={`flex items-center space-x-4 px-4 py-3 rounded-lg transition-all duration-200 group hover:bg-gray-100 ${isActive ? 'font-bold' : ''
+                            className={`flex items-center space-x-4 px-4 py-3.5 rounded-2xl transition-all duration-200 group relative overflow-hidden ${isActive
+                                ? 'text-blue-600 font-bold bg-blue-50/50 shadow-sm'
+                                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                                 }`}
                         >
+                            {isActive && (
+                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500 rounded-r-full" />
+                            )}
                             <Icon className={`w-6 h-6 group-hover:scale-110 transition-transform ${isActive ? 'stroke-[2.5px]' : 'stroke-[1.5px]'}`} />
-                            <span className="text-base">{item.label}</span>
+                            <span className="text-base tracking-wide">{item.label}</span>
                         </Link>
                     )
                 })}
@@ -56,10 +61,10 @@ export function Sidebar() {
 
             <button
                 onClick={handleLogout}
-                className="flex items-center space-x-4 px-4 py-3 rounded-lg hover:bg-red-50 text-red-600 transition-colors mt-auto group"
+                className="flex items-center space-x-4 px-4 py-3 rounded-2xl hover:bg-red-50 text-red-500 transition-colors mt-auto group font-bold"
             >
                 <LogOut className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-                <span className="text-base font-semibold">Logout</span>
+                <span className="text-base">Logout</span>
             </button>
         </div>
     )

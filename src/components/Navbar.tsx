@@ -55,16 +55,16 @@ export function Navbar() {
     }, [])
 
     return (
-        <nav className="fixed top-0 left-64 right-0 h-16 bg-white border-b border-gray-200 z-40 px-8 flex items-center justify-between">
+        <nav className="fixed top-0 left-64 right-0 h-20 bg-white/80 backdrop-blur-md border-b border-white/20 z-40 px-8 flex items-center justify-between shadow-sm">
             <div className="flex-1 max-w-sm relative">
                 <div className="relative group z-50">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
                     <input
                         type="text"
                         placeholder="Search users..."
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-transparent focus:border-gray-200 rounded-lg text-sm outline-none transition-all focus:bg-white"
+                        className="w-full pl-11 pr-5 py-3 bg-gray-100/50 border-2 border-transparent focus:border-blue-200 rounded-2xl text-sm outline-none transition-all focus:bg-white focus:shadow-lg focus:shadow-blue-500/10 font-medium placeholder:text-gray-400"
                     />
                 </div>
 
@@ -110,7 +110,11 @@ export function Navbar() {
 
             <div className="flex items-center space-x-6">
                 <Heart className="w-6 h-6 text-gray-700 cursor-pointer hover:text-red-500 transition-colors" />
-                <MessageCircle className="w-6 h-6 text-gray-700 cursor-pointer hover:text-blue-500 transition-colors" />
+                <Link href="/reels">
+                    <div className="relative group">
+                        <MessageCircle className="w-6 h-6 text-gray-700 cursor-pointer hover:text-blue-500 transition-colors transform rotate-90" /> {/* Using MessageCircle rotated as a placeholder for Reels icon if Video icon not imported */}
+                    </div>
+                </Link>
 
                 <Link href="/profile" className="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 p-[2px] cursor-pointer hover:scale-105 transition-transform">
                     <div className="w-full h-full rounded-full bg-white p-[2px]">

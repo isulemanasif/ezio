@@ -6,8 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "setup-storage": "node scripts/setup-storage.js"
+    "lint": "next lint",
+    "setup-storage": "node scripts/setup-storage.js",
+    "setup-posts": "node scripts/setup-posts-bucket.js"
   },
   "dependencies": {
     "@supabase/ssr": "^0.8.0",

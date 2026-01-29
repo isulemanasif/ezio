@@ -12,10 +12,22 @@ export function Post({ post }: { post: any }) {
     const [comments, setComments] = useState<any[]>([])
     const [commentText, setCommentText] = useState('')
     const [isCommenting, setIsCommenting] = useState(false)
+    const [authorAvatar, setAuthorAvatar] = useState(post.avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=user')
     const supabase = createClient()
 
     useEffect(() => {
         const fetchData = async () => {
+            // Fetch Author Profile (Correction for Join issues)
+            const { data: authorData } = await supabase
+                .from('profiles')
+                .select('avatar_url')
+                .eq('id', post.user_id)
+                .maybeSingle()
+
+            if (authorData?.avatar_url) {
+                setAuthorAvatar(authorData.avatar_url)
+            }
+
             const { data: { user } } = await supabase.auth.getUser()
 
             // Check Like Status
@@ -43,7 +55,7 @@ export function Post({ post }: { post: any }) {
             setComments(commentData || [])
         }
         fetchData()
-    }, [post.id])
+    }, [post.id, post.user_id])
 
     const handleLike = async () => {
         try {
@@ -109,7 +121,7 @@ export function Post({ post }: { post: any }) {
                     <Link href={`/profile/${post.user_id}`}>
                         <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 p-[1.5px] cursor-pointer">
                             <div className="w-full h-full rounded-full bg-white p-[1.5px]">
-                                <img src={post.avatar} alt={post.username} className="w-full h-full rounded-full object-cover" />
+                                <img src={authorAvatar} alt={post.username} className="w-full h-full rounded-full object-cover" />
                             </div>
                         </div>
                     </Link>
