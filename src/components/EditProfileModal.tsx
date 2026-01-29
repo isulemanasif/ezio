@@ -97,6 +97,8 @@ export function EditProfileModal({
         } else {
             onUpdate({ ...profile, username, full_name: fullName, avatar_url: avatarUrl, bio, website })
             onClose()
+            // Nuclear option to ensure Navbar and everywhere else syncs the new avatar
+            window.location.reload()
         }
         setLoading(false)
     }
