@@ -12,39 +12,11 @@ export const EziogramLogo = ({ size = 40, className = "" }: { size?: number, cla
             animate={{ rotate: 360 }}
             transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
         >
-            <svg
-                viewBox="0 0 100 100"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-full h-full"
-            >
-                <defs>
-                    <linearGradient id="eziogram-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#818CF8" />
-                        <stop offset="100%" stopColor="#C084FC" />
-                    </linearGradient>
-                </defs>
-                {/* Antigravity-inspired geometric logo */}
-                <circle cx="50" cy="50" r="45" stroke="url(#eziogram-grad)" strokeWidth="2" strokeDasharray="10 5" />
-                <path
-                    d="M50 20 L80 70 L20 70 Z"
-                    fill="url(#eziogram-grad)"
-                    fillOpacity="0.2"
-                    stroke="url(#eziogram-grad)"
-                    strokeWidth="4"
-                    strokeLinejoin="round"
-                />
-                <circle cx="50" cy="50" r="8" fill="url(#eziogram-grad)" />
-                <motion.path
-                    d="M50 10 L50 30 M90 50 L70 50 M50 90 L50 70 M10 50 L30 50"
-                    stroke="url(#eziogram-grad)"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
-                />
-            </svg>
+            <img
+                src="/logo.png"
+                alt="Eziogram Luxury Logo"
+                className="w-full h-full object-contain drop-shadow-2xl"
+            />
         </motion.div>
     )
 }
