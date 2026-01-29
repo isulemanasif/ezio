@@ -1,25 +1,34 @@
+"use client"
+
 import { Sidebar } from '@/components/Sidebar'
 import { Navbar } from '@/components/Navbar'
 import { createClient } from '@/lib/supabase'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
-// Server Component for fetching suggestions (making MainLayout async)
-export default async function MainLayout({
+export default function MainLayout({
     children,
 }: {
     children: React.ReactNode
 }) {
+    const [suggestions, setSuggestions] = useState<any[]>([])
     const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
 
-    // Fetch random users for suggestions (excluding current user)
-    // Note: 'random()' isn't directly supported in standard Supabase JS select without RPC, 
-    // but for now we'll fetch a batch and shuffle or just take the top 5 different ones.
-    const { data: suggestions } = await supabase
-        .from('profiles')
-        .select('id, username, full_name, avatar_url')
-        .neq('id', user?.id || '')
-        .limit(5)
+    useEffect(() => {
+        const fetchSuggestions = async () => {
+            const { data: { user } } = await supabase.auth.getUser()
+
+            // Fetch suggestions
+            const { data } = await supabase
+                .from('profiles')
+                .select('id, username, full_name, avatar_url')
+                .neq('id', user?.id || '')
+                .limit(5)
+
+            setSuggestions(data || [])
+        }
+        fetchSuggestions()
+    }, [])
 
     return (
         <div className="min-h-screen bg-[#FDFDFD] flex font-sans">
