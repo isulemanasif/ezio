@@ -58,6 +58,9 @@ export function EditProfileModal({
                     .from('profiles')
                     .update({ avatar_url: publicUrl })
                     .eq('id', user.id)
+
+                // Immediately update the parent UI state
+                onUpdate({ ...profile, avatar_url: publicUrl })
             }
 
         } catch (error: any) {
