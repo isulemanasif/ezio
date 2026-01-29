@@ -22,7 +22,40 @@ export function EditProfileModal({
     const [bio, setBio] = useState(profile?.bio || '')
     const [website, setWebsite] = useState(profile?.website || '')
     const [loading, setLoading] = useState(false)
+    const [uploading, setUploading] = useState(false)
     const supabase = createClient()
+
+    const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        try {
+            setUploading(true)
+            if (!e.target.files || e.target.files.length === 0) {
+                throw new Error('You must select an image to upload.')
+            }
+
+            const file = e.target.files[0]
+            const fileExt = file.name.split('.').pop()
+            const fileName = `${Math.random()}.${fileExt}`
+            const filePath = `${fileName}`
+
+            const { error: uploadError } = await supabase.storage
+                .from('avatars')
+                .upload(filePath, file)
+
+            if (uploadError) {
+                throw uploadError
+            }
+
+            const { data: { publicUrl } } = supabase.storage
+                .from('avatars')
+                .getPublicUrl(filePath)
+
+            setAvatarUrl(publicUrl)
+        } catch (error: any) {
+            alert(error.message)
+        } finally {
+            setUploading(false)
+        }
+    }
 
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -79,18 +112,39 @@ export function EditProfileModal({
                         <form onSubmit={handleUpdate} className="p-8 space-y-6">
                             <div className="flex flex-col items-center mb-8">
                                 <div className="relative group">
-                                    <img
-                                        src={avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile?.id}`}
-                                        className="w-24 h-24 rounded-full border-4 border-gray-50 object-cover shadow-lg"
-                                        alt="Avatar"
-                                    />
-                                    <div className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
-                                        <Camera className="w-6 h-6 text-white" />
+                                    <div className="w-24 h-24 rounded-full border-4 border-gray-50 overflow-hidden shadow-lg relative">
+                                        <img
+                                            src={avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile?.id}`}
+                                            className="w-full h-full object-cover"
+                                            alt="Avatar"
+                                        />
+                                        {uploading && (
+                                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                                <Loader2 className="w-6 h-6 text-white animate-spin" />
+                                            </div>
+                                        )}
                                     </div>
+                                    <label className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
+                                        <Camera className="w-6 h-6 text-white" />
+                                        <input
+                                            type="file"
+                                            className="hidden"
+                                            accept="image/*"
+                                            onChange={handleUpload}
+                                            disabled={uploading}
+                                        />
+                                    </label>
                                 </div>
-                                <button type="button" className="mt-3 text-blue-500 text-sm font-bold hover:text-blue-600 transition-colors">
-                                    Change Profile Photo
-                                </button>
+                                <label className="mt-3 text-blue-500 text-sm font-bold hover:text-blue-600 transition-colors cursor-pointer">
+                                    {uploading ? 'Uploading...' : 'Change Profile Photo'}
+                                    <input
+                                        type="file"
+                                        className="hidden"
+                                        accept="image/*"
+                                        onChange={handleUpload}
+                                        disabled={uploading}
+                                    />
+                                </label>
                             </div>
 
                             <div className="space-y-4">
