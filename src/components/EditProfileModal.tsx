@@ -19,6 +19,8 @@ export function EditProfileModal({
     const [username, setUsername] = useState(profile?.username || '')
     const [fullName, setFullName] = useState(profile?.full_name || '')
     const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || '')
+    const [bio, setBio] = useState(profile?.bio || '')
+    const [website, setWebsite] = useState(profile?.website || '')
     const [loading, setLoading] = useState(false)
     const supabase = createClient()
 
@@ -35,6 +37,8 @@ export function EditProfileModal({
                 username,
                 full_name: fullName,
                 avatar_url: avatarUrl,
+                bio,
+                website,
                 updated_at: new Date().toISOString()
             })
             .eq('id', user.id)
@@ -42,7 +46,7 @@ export function EditProfileModal({
         if (error) {
             alert(error.message)
         } else {
-            onUpdate({ ...profile, username, full_name: fullName, avatar_url: avatarUrl })
+            onUpdate({ ...profile, username, full_name: fullName, avatar_url: avatarUrl, bio, website })
             onClose()
         }
         setLoading(false)
@@ -118,6 +122,25 @@ export function EditProfileModal({
                                         value={avatarUrl}
                                         onChange={(e) => setAvatarUrl(e.target.value)}
                                         placeholder="Link to your image..."
+                                    />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-xs font-black uppercase tracking-widest text-gray-400">Bio</label>
+                                    <textarea
+                                        className="w-full px-5 py-3 bg-gray-50 border-2 border-transparent focus:border-blue-500 rounded-xl focus:bg-white outline-none transition-all font-medium resize-none h-24"
+                                        value={bio}
+                                        onChange={(e) => setBio(e.target.value)}
+                                        placeholder="Tell us about yourself..."
+                                    />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-xs font-black uppercase tracking-widest text-gray-400">Website</label>
+                                    <input
+                                        type="url"
+                                        className="w-full px-5 py-3 bg-gray-50 border-2 border-transparent focus:border-blue-500 rounded-xl focus:bg-white outline-none transition-all font-medium"
+                                        value={website}
+                                        onChange={(e) => setWebsite(e.target.value)}
+                                        placeholder="https://yourwebsite.com"
                                     />
                                 </div>
                             </div>

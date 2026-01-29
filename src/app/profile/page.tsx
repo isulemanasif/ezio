@@ -1,10 +1,11 @@
 "use client"
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import MainLayout from '@/components/MainLayout'
 import { Settings, Grid, Bookmark, Tag, Loader2 } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { EditProfileModal } from '@/components/EditProfileModal'
 
 export default function ProfilePage() {
@@ -14,7 +15,14 @@ export default function ProfilePage() {
     const [loading, setLoading] = useState(true)
     const [activeTab, setActiveTab] = useState('posts')
     const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false)
     const supabase = createClient()
+    const router = useRouter()
+
+    const handleLogout = async () => {
+        await supabase.auth.signOut()
+        router.push('/login')
+    }
 
     useEffect(() => {
         const fetchProfileData = async () => {
@@ -83,9 +91,44 @@ export default function ProfilePage() {
                                 >
                                     Edit Profile
                                 </button>
-                                <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                                    <Settings className="w-5 h-5 text-gray-700" />
-                                </button>
+                                <div className="relative">
+                                    <button
+                                        onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+                                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                                    >
+                                        <Settings className="w-5 h-5 text-gray-700" />
+                                    </button>
+
+                                    <AnimatePresence>
+                                        {isSettingsOpen && (
+                                            <motion.div
+                                                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                                exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                                                className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-2xl z-50 overflow-hidden"
+                                            >
+                                                <div className="flex flex-col py-1">
+                                                    <button className="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors font-medium text-gray-700">
+                                                        Account Settings
+                                                    </button>
+                                                    <button className="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors font-medium text-gray-700">
+                                                        Privacy & Security
+                                                    </button>
+                                                    <button className="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors font-medium text-gray-700">
+                                                        Saved Posts
+                                                    </button>
+                                                    <div className="h-[1px] bg-gray-100 my-1" />
+                                                    <button
+                                                        onClick={handleLogout}
+                                                        className="w-full text-left px-4 py-2.5 text-sm text-red-600 font-bold hover:bg-red-50 transition-colors"
+                                                    >
+                                                        Log Out
+                                                    </button>
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
                             </div>
                         </div>
 
@@ -106,10 +149,19 @@ export default function ProfilePage() {
 
                         <div>
                             <h1 className="font-bold text-gray-900">{profile?.full_name || 'Ezio User'}</h1>
-                            <p className="text-gray-600 text-sm mt-1 whitespace-pre-line">
-                                Passionate about technology and creativity. 🚀
-                                Part of the Ezio community.
+                            <p className="text-gray-800 text-sm mt-1 whitespace-pre-line">
+                                {profile?.bio || 'No bio yet. Click Edit Profile to add one! ✨'}
                             </p>
+                            {profile?.website && (
+                                <a
+                                    href={profile.website}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-900 text-sm font-bold hover:underline mt-1 block"
+                                >
+                                    {profile.website.replace('https://', '').replace('http://', '')}
+                                </a>
+                            )}
                         </div>
                     </div>
                 </div>

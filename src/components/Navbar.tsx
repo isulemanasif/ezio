@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase'
 import { Search, Heart, MessageCircle } from 'lucide-react'
 
@@ -37,7 +38,7 @@ export function Navbar() {
                 <button className="relative p-2 hover:bg-gray-100 rounded-full transition-colors">
                     <Heart className="w-6 h-6 text-gray-700" />
                 </button>
-                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 p-[2px] cursor-pointer hover:scale-105 transition-transform">
+                <Link href="/profile" className="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 p-[2px] cursor-pointer hover:scale-105 transition-transform">
                     <div className="w-full h-full rounded-full bg-white p-[2px]">
                         <img
                             src={user ? `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.id}` : "https://api.dicebear.com/7.x/avataaars/svg?seed=Ezio"}
@@ -45,7 +46,7 @@ export function Navbar() {
                             className="w-full h-full rounded-full"
                         />
                     </div>
-                </div>
+                </Link>
             </div>
         </div>
     )
