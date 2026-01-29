@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import MainLayout from '@/components/MainLayout'
-import { Settings, Grid, Bookmark, Tag, Loader2 } from 'lucide-react'
+import { Settings, Grid, Bookmark, Tag, Loader2, MonitorPlay, Play } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { EditProfileModal } from '@/components/EditProfileModal'
 
@@ -12,6 +12,7 @@ export default function ProfilePage() {
     const [user, setUser] = useState<any>(null)
     const [profile, setProfile] = useState<any>(null)
     const [posts, setPosts] = useState<any[]>([])
+    const [reels, setReels] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
     const [activeTab, setActiveTab] = useState('posts')
     const [isEditModalOpen, setIsEditModalOpen] = useState(false)
@@ -66,6 +67,15 @@ export default function ProfilePage() {
                 .order('created_at', { ascending: false })
 
             setPosts(postsData || [])
+
+            // Fetch User Reels
+            const { data: reelsData } = await supabase
+                .from('reels')
+                .select('*')
+                .eq('user_id', user.id)
+                .order('created_at', { ascending: false })
+            setReels(reelsData || [])
+
             setLoading(false)
         }
 
@@ -91,6 +101,7 @@ export default function ProfilePage() {
                         <div className="w-32 md:w-40 h-32 md:h-40 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 p-[3px]">
                             <div className="w-full h-full rounded-full bg-white p-[3px]">
                                 <img
+                                    key={profile?.avatar_url}
                                     src={profile?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.id}`}
                                     alt="Profile"
                                     className="w-full h-full rounded-full object-cover"
@@ -195,6 +206,13 @@ export default function ProfilePage() {
                             <span>Posts</span>
                         </button>
                         <button
+                            onClick={() => setActiveTab('reels')}
+                            className={`flex items-center space-x-2 py-4 border-t transition-all ${activeTab === 'reels' ? 'border-black text-black' : 'border-transparent text-gray-400'}`}
+                        >
+                            <MonitorPlay className="w-4 h-4" />
+                            <span>Reels</span>
+                        </button>
+                        <button
                             onClick={() => setActiveTab('saved')}
                             className={`flex items-center space-x-2 py-4 border-t transition-all ${activeTab === 'saved' ? 'border-black text-black' : 'border-transparent text-gray-400'}`}
                         >
@@ -238,6 +256,37 @@ export default function ProfilePage() {
                                                 <span>💬</span>
                                                 <span>0</span>
                                             </div>
+                                        </div>
+                                    </motion.div>
+                                ))
+                            )}
+                        </div>
+                    )}
+
+                    {/* Reels Grid */}
+                    {activeTab === 'reels' && (
+                        <div className="grid grid-cols-3 gap-1 md:gap-8 mt-4">
+                            {reels.length === 0 ? (
+                                <div className="col-span-3 py-20 text-center">
+                                    <p className="text-gray-400">No reels uploaded yet.</p>
+                                </div>
+                            ) : (
+                                reels.map((reel) => (
+                                    <motion.div
+                                        key={reel.id}
+                                        whileHover={{ scale: 1.02 }}
+                                        className="aspect-[9/16] bg-gray-900 relative group cursor-pointer overflow-hidden rounded-lg shadow-sm"
+                                    >
+                                        <video
+                                            src={reel.video_url}
+                                            className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                                            muted
+                                        />
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <Play className="w-8 h-8 text-white opacity-80" />
+                                        </div>
+                                        <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
+                                            <p className="text-white text-xs font-bold truncate">{reel.description}</p>
                                         </div>
                                     </motion.div>
                                 ))

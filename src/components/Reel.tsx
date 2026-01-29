@@ -13,7 +13,6 @@ export function Reel({ reel }: { reel: any }) {
     const supabase = createClient()
 
     useEffect(() => {
-        // Check like status
         const checkLike = async () => {
             const { data: { user } } = await supabase.auth.getUser()
             if (!user) return
@@ -29,6 +28,31 @@ export function Reel({ reel }: { reel: any }) {
         }
         checkLike()
     }, [reel.id])
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    videoRef.current?.play().catch(() => { })
+                    setIsPlaying(true)
+                } else {
+                    videoRef.current?.pause()
+                    setIsPlaying(false)
+                }
+            },
+            { threshold: 0.6 } // Play only when 60% visible
+        )
+
+        if (videoRef.current) {
+            observer.observe(videoRef.current)
+        }
+
+        return () => {
+            if (videoRef.current) {
+                observer.unobserve(videoRef.current)
+            }
+        }
+    }, [])
 
     const togglePlay = () => {
         if (videoRef.current) {
@@ -70,7 +94,7 @@ export function Reel({ reel }: { reel: any }) {
                 <video
                     ref={videoRef}
                     src={reel.videoPlaceholder}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain max-w-full max-h-full"
                     autoPlay
                     loop
                     playsInline

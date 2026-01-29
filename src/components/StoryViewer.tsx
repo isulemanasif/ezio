@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ChevronLeft, ChevronRight, Heart, Send } from 'lucide-react'
+import { createClient } from '@/lib/supabase'
 
 export function StoryViewer({
     stories,
@@ -120,9 +121,41 @@ export function StoryViewer({
                             type="text"
                             placeholder={`Reply to ${story.profiles?.username}...`}
                             className="w-full bg-transparent border border-white/50 rounded-full px-4 py-3 text-white placeholder:text-white/70 focus:outline-none focus:border-white focus:bg-white/10"
+                            onKeyDown={async (e) => {
+                                if (e.key === 'Enter') {
+                                    const val = (e.target as HTMLInputElement).value
+                                    if (!val.trim()) return
+                                    const { data: { user } } = await createClient().auth.getUser()
+                                    if (user) {
+                                        await createClient().from('comments').insert({
+                                            user_id: user.id,
+                                            story_id: story.id, // Assuming this column exists or will be added
+                                            content: val
+                                        })
+                                            ; (e.target as HTMLInputElement).value = ''
+                                        alert('Reply sent!')
+                                    }
+                                }
+                            }}
                         />
                     </div>
-                    <button className="text-white">
+                    <button
+                        className="text-white active:scale-90 transition-transform"
+                        onClick={async () => {
+                            const { data: { user } } = await createClient().auth.getUser()
+                            if (user) {
+                                const supabase = createClient()
+                                // Check if already liked
+                                const { data } = await supabase.from('likes').select('*').eq('story_id', story.id).eq('user_id', user.id).maybeSingle()
+                                if (data) {
+                                    await supabase.from('likes').delete().eq('story_id', story.id).eq('user_id', user.id)
+                                } else {
+                                    await supabase.from('likes').insert({ story_id: story.id, user_id: user.id })
+                                }
+                                alert('Story Liked!')
+                            }
+                        }}
+                    >
                         <Heart className="w-8 h-8" />
                     </button>
                     <button className="text-white">
