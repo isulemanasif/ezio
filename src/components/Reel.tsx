@@ -47,7 +47,7 @@ export function Reel({ reel }: { reel: any }) {
 
         const newLiked = !liked
         setLiked(newLiked)
-        setLikesCount(prev => newLiked ? prev + 1 : Math.max(0, prev - 1))
+        setLikesCount((prev: number) => newLiked ? prev + 1 : Math.max(0, prev - 1))
 
         try {
             if (newLiked) {
@@ -59,7 +59,7 @@ export function Reel({ reel }: { reel: any }) {
             console.error('Like error', err)
             // Revert
             setLiked(!newLiked)
-            setLikesCount(prev => !newLiked ? prev + 1 : Math.max(0, prev - 1))
+            setLikesCount((prev: number) => !newLiked ? prev + 1 : Math.max(0, prev - 1))
         }
     }
 

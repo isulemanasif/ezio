@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "setup-storage": "node scripts/setup-storage.js",
-    "setup-posts": "node scripts/setup-posts-bucket.js"
+    "setup-posts": "node scripts/setup-posts-bucket.js",
+    "setup-avatars": "node scripts/setup-avatars-bucket.js"
   },
   "dependencies": {
     "@supabase/ssr": "^0.8.0",
