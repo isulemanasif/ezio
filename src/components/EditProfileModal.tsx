@@ -51,13 +51,16 @@ export function EditProfileModal({
 
             setAvatarUrl(publicUrl)
 
-            // Auto-save to database to avoid confusion
+            // Auto-save to database (upsert to handle missing profiles)
             const { data: { user } } = await supabase.auth.getUser()
             if (user) {
                 await supabase
                     .from('profiles')
-                    .update({ avatar_url: publicUrl })
-                    .eq('id', user.id)
+                    .upsert({
+                        id: user.id,
+                        avatar_url: publicUrl,
+                        updated_at: new Date().toISOString()
+                    })
 
                 // Immediately update the parent UI state
                 onUpdate({ ...profile, avatar_url: publicUrl })
@@ -79,7 +82,8 @@ export function EditProfileModal({
 
         const { error } = await supabase
             .from('profiles')
-            .update({
+            .upsert({
+                id: user.id,
                 username,
                 full_name: fullName,
                 avatar_url: avatarUrl,
@@ -87,7 +91,6 @@ export function EditProfileModal({
                 website,
                 updated_at: new Date().toISOString()
             })
-            .eq('id', user.id)
 
         if (error) {
             alert(error.message)

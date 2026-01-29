@@ -31,14 +31,31 @@ export default function ProfilePage() {
 
             setUser(user)
 
-            // Fetch Profile
-            const { data: profileData } = await supabase
+            // Fetch or Create Profile
+            const { data: profileData, error: profileError } = await supabase
                 .from('profiles')
                 .select('*')
                 .eq('id', user.id)
-                .single()
+                .maybeSingle()
 
-            setProfile(profileData)
+            if (!profileData && !profileError) {
+                // If profile doesn't exist, create it
+                const newProfile = {
+                    id: user.id,
+                    username: user.email?.split('@')[0],
+                    full_name: user.user_metadata?.full_name || 'Eziogram User',
+                    avatar_url: `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.id}`,
+                    updated_at: new Date().toISOString()
+                }
+                const { data: createdProfile } = await supabase
+                    .from('profiles')
+                    .upsert(newProfile)
+                    .select()
+                    .single()
+                setProfile(createdProfile)
+            } else {
+                setProfile(profileData)
+            }
 
             // Fetch User Posts
             const { data: postsData } = await supabase
