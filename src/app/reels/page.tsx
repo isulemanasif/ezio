@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { Reel } from '@/components/Reel'
 import { Sidebar } from '@/components/Sidebar'
-import { Loader2 } from 'lucide-react'
+import { Loader2, PlaySquare } from 'lucide-react'
 
 export default function ReelsPage() {
     const [reels, setReels] = useState<any[]>([])
@@ -69,4 +69,4 @@ export default function ReelsPage() {
     )
 }
 
-import { PlaySquare } from 'lucide-react'
+

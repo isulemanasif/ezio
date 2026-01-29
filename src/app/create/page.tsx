@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import MainLayout from '@/components/MainLayout'
 import { PlusSquare, PlaySquare, Image as ImageIcon, Send, Loader2, X } from 'lucide-react'
@@ -83,8 +84,8 @@ export default function CreatePage() {
                                 key={btn.id}
                                 onClick={() => setType(btn.id as any)}
                                 className={`flex-1 py-3 rounded-2xl text-sm font-bold flex items-center justify-center space-x-2 transition-all ${type === btn.id
-                                        ? `bg-white shadow-md text-${btn.color}-600`
-                                        : 'text-gray-400 hover:text-gray-600'
+                                    ? `bg-white shadow-md text-${btn.color}-600`
+                                    : 'text-gray-400 hover:text-gray-600'
                                     }`}
                             >
                                 <btn.icon className="w-4 h-4" />
@@ -140,8 +141,8 @@ export default function CreatePage() {
                             type="submit"
                             disabled={loading || !url}
                             className={`w-full py-5 rounded-2xl font-black text-lg text-white shadow-2xl transition-all active:scale-[0.98] disabled:opacity-50 disabled:grayscale disabled:active:scale-100 flex items-center justify-center space-x-3 ${type === 'post' ? 'bg-gradient-to-r from-blue-500 to-indigo-600 shadow-blue-200' :
-                                    type === 'reel' ? 'bg-gradient-to-r from-purple-500 to-pink-600 shadow-purple-200' :
-                                        'bg-gradient-to-r from-pink-500 to-orange-500 shadow-pink-200'
+                                type === 'reel' ? 'bg-gradient-to-r from-purple-500 to-pink-600 shadow-purple-200' :
+                                    'bg-gradient-to-r from-pink-500 to-orange-500 shadow-pink-200'
                                 }`}
                         >
                             {loading ? (
@@ -160,4 +161,4 @@ export default function CreatePage() {
     )
 }
 
-import { useRouter } from 'next/navigation'
+

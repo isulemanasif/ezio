@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import MainLayout from '@/components/MainLayout'
-import { Search, Phone, Video, Info, Send, Smile, Image as ImageIcon } from 'lucide-react'
+import { Search, Phone, Video, Info, Send, Smile, Image as ImageIcon, MessageCircle } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 const MOCK_CHATS = [
