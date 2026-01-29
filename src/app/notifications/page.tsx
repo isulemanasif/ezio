@@ -9,6 +9,7 @@ import { motion } from 'framer-motion'
 export default function NotificationsPage() {
     const [notifications, setNotifications] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
+    const supabase = createClient()
 
     useEffect(() => {
         const fetchNotifications = async () => {
