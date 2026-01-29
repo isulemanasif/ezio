@@ -21,15 +21,20 @@ export function StoryViewer({
         const timer = setInterval(() => {
             setProgress(prev => {
                 if (prev >= 100) {
-                    handleNext()
-                    return 0
+                    return 100
                 }
                 return prev + 1
             })
-        }, 50) // 5 seconds duration (50ms * 100)
+        }, 50)
 
         return () => clearInterval(timer)
     }, [currentIndex])
+
+    useEffect(() => {
+        if (progress >= 100) {
+            handleNext()
+        }
+    }, [progress])
 
     const handleNext = () => {
         if (currentIndex < stories.length - 1) {
@@ -83,9 +88,10 @@ export function StoryViewer({
 
                 {/* Content */}
                 <div className="absolute inset-0 flex items-center justify-center">
+                    {/* Currently stories are image-only in CreatePage, but keeping video structure for future */}
                     {story.media_type === 'video' ? (
                         <video
-                            src={story.media_url}
+                            src={story.video_url || story.media_url}
                             className="w-full h-full object-cover"
                             autoPlay
                             playsInline
@@ -93,7 +99,7 @@ export function StoryViewer({
                         />
                     ) : (
                         <img
-                            src={story.media_url}
+                            src={story.image_url || story.media_url}
                             className="w-full h-full object-cover"
                             alt="Story"
                         />
